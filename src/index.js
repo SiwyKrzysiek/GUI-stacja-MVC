@@ -27,6 +27,7 @@ function Field(props) {
   );
 }
 
+// Field with Controler
 class ColorfullField extends React.Component {
   constructor(props) {
     super(props);
@@ -38,7 +39,19 @@ class ColorfullField extends React.Component {
 
   // getColor()
 
-  // onChange =
+  onKeyPress = e => {
+    console.log(e.key);
+  };
+
+  onChange = e => {
+    // console.log(e);
+    const newValue = e.target.value;
+    if (!isNaN(newValue)) {
+      this.setState({
+        value: newValue
+      });
+    }
+  };
 
   render() {
     return (
@@ -46,11 +59,12 @@ class ColorfullField extends React.Component {
         <span>{this.props.label}</span>
         <span>
           <input
-            id={this.props.id}
+            // id={this.props.id}
             type="text"
-            readOnly={this.readOnly}
-            value={this.props.value}
-            onChange={this.props.onChangeValue}
+            readOnly={false}
+            value={this.state.value}
+            // onKeyPress={this.onKeyPress}
+            onChange={this.onChange}
             style={{
               color: this.props.colorForVariance
                 ? this.props.colorForVariance()
@@ -181,6 +195,7 @@ function App() {
       <h1>Mapa stacji bazowych</h1>
 
       <Form />
+      <ColorfullField editable />
     </div>
   );
 }
