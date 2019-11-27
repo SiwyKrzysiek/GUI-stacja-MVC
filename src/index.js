@@ -5,31 +5,41 @@ import { DataSet } from "./data";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles.css";
-function Field(props) {
-  console.log(props.colorForVariance);
-  var readOnly = "editable" in props ? false : true;
-  return (
-    <li>
-      <span>{props.label}</span>
-      <span>
-        <input
-          id={props.id}
-          type="text"
-          readOnly={readOnly}
-          value={props.value}
-          onChange={props.onChangeValue}
-          style={{
-            color: props.colorForVariance ? props.colorForVariance() : "black"
-          }}
-        />
-      </span>
-    </li>
-  );
+class Field extends React.Component {
+  constructor(props) {
+    super(props);
+    console.log("Buduję stary komponent");
+  }
+
+  // console.log(props.colorForVariance);
+  render() {
+    var readOnly = "editable" in this.props ? false : true;
+    return (
+      <li>
+        <span>{this.props.label}</span>
+        <span>
+          <input
+            id={this.props.id}
+            type="text"
+            readOnly={readOnly}
+            value={this.props.value}
+            onChange={this.props.onChangeValue}
+            style={{
+              color: this.props.colorForVariance
+                ? this.props.colorForVariance()
+                : "black"
+            }}
+          />
+        </span>
+      </li>
+    );
+  }
 }
 
 // Field with Controler
 class ColorfullField extends React.Component {
   constructor(props) {
+    console.log("Buduję nowy komponent");
     super(props);
     this.readOnly = "editable" in props ? false : true;
     this.state = {
@@ -46,10 +56,6 @@ class ColorfullField extends React.Component {
     }
 
     return "";
-  };
-
-  onKeyPress = e => {
-    console.log(e.key);
   };
 
   onChange = e => {
@@ -69,17 +75,11 @@ class ColorfullField extends React.Component {
         <span>
           <input
             className={this.getColorClass()}
-            // id={this.props.id}
+            id={this.props.id}
             type="text"
-            readOnly={false}
+            readOnly={this.readOnly}
             value={this.state.value}
-            // onKeyPress={this.onKeyPress}
             onChange={this.onChange}
-            // style={{
-            //   color: this.props.colorForVariance
-            //     ? this.props.colorForVariance()
-            //     : "black"
-            // }}
           />
         </span>
       </li>
@@ -106,6 +106,11 @@ function Station(props) {
               }}
               value={s.value}
               editable
+            />
+            <ColorfullField
+              id="input-expected"
+              label="Różnica"
+              value={s.value - s.expected}
             />
             <Field
               id="input-expected"
@@ -141,25 +146,26 @@ class Form extends React.Component {
   };
 
   onChangeValue = (station, e) => {
+    console.log(station);
     let v = e.target.value;
     station.value = v;
     console.log("Akuku: ", v);
     this.setState({ data: this.state.data });
   };
 
-  updateColor = () => {
-    var e = document.getElementById("input-expected");
-    if (e) {
-      //var v = parseInt(e.value);
-      e.style.color = this.getColorForVariance();
-    }
-  };
+  // updateColor = () => {
+  //   var e = document.getElementById("input-expected");
+  //   if (e) {
+  //     //var v = parseInt(e.value);
+  //     e.style.color = this.getColorForVariance();
+  //   }
+  // };
 
-  getColorForVariance = () => {
-    var v = this.state.selected.value - this.state.selected.expected;
-    console.log(v);
-    return v >= 0 ? "green" : "red";
-  };
+  // getColorForVariance = () => {
+  //   var v = this.state.selected.value - this.state.selected.expected;
+  //   console.log(v);
+  //   return v >= 0 ? "green" : "red";
+  // };
 
   componentDidMount() {
     //this.updateColor();
@@ -189,7 +195,7 @@ class Form extends React.Component {
               <Station
                 onChangeValue={this.onChangeValue}
                 station={this.state.selected}
-                colorForVariance={this.getColorForVariance}
+                // colorForVariance={this.getColorForVariance}
               />
             </div>
           </div>
