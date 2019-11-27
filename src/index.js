@@ -37,7 +37,16 @@ class ColorfullField extends React.Component {
     };
   }
 
-  // getColor()
+  getColorClass = e => {
+    if (this.state.value < 0) {
+      return "too-low";
+    }
+    if (this.state.value > 0) {
+      return "too-high";
+    }
+
+    return "";
+  };
 
   onKeyPress = e => {
     console.log(e.key);
@@ -46,7 +55,7 @@ class ColorfullField extends React.Component {
   onChange = e => {
     // console.log(e);
     const newValue = e.target.value;
-    if (!isNaN(newValue)) {
+    if (!isNaN(newValue) || newValue === "-") {
       this.setState({
         value: newValue
       });
@@ -59,17 +68,18 @@ class ColorfullField extends React.Component {
         <span>{this.props.label}</span>
         <span>
           <input
+            className={this.getColorClass()}
             // id={this.props.id}
             type="text"
             readOnly={false}
             value={this.state.value}
             // onKeyPress={this.onKeyPress}
             onChange={this.onChange}
-            style={{
-              color: this.props.colorForVariance
-                ? this.props.colorForVariance()
-                : "black"
-            }}
+            // style={{
+            //   color: this.props.colorForVariance
+            //     ? this.props.colorForVariance()
+            //     : "black"
+            // }}
           />
         </span>
       </li>

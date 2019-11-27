@@ -2,3 +2,11 @@
   font-family: sans-serif;
   text-align: center;
 }
+
+.too-low {
+  color: red;
+}
+
+.too-high {
+  color: greenyellow;
+}
