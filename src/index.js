@@ -5,86 +5,51 @@ import { DataSet } from "./data";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles.css";
-class Field extends React.Component {
-  constructor(props) {
-    super(props);
-    console.log("Buduję stary komponent");
-  }
 
-  // console.log(props.colorForVariance);
-  render() {
-    var readOnly = "editable" in this.props ? false : true;
-    return (
-      <li>
-        <span>{this.props.label}</span>
-        <span>
-          <input
-            id={this.props.id}
-            type="text"
-            readOnly={readOnly}
-            value={this.props.value}
-            onChange={this.props.onChangeValue}
-            style={{
-              color: this.props.colorForVariance
-                ? this.props.colorForVariance()
-                : "black"
-            }}
-          />
-        </span>
-      </li>
-    );
-  }
+function Field(props) {
+  console.log(props.colorForVariance);
+  var readOnly = "editable" in props ? false : true;
+  return (
+    <li>
+      <span>{props.label}</span>
+      <span>
+        <input
+          id={props.id}
+          type="text"
+          readOnly={readOnly}
+          value={props.value}
+          onChange={props.onChangeValue}
+        />
+      </span>
+    </li>
+  );
 }
 
 // Field with Controler
-class ColorfullField extends React.Component {
-  constructor(props) {
-    console.log("Buduję nowy komponent");
-    super(props);
-    this.readOnly = "editable" in props ? false : true;
-    this.state = {
-      value: this.props.value
-    };
-  }
+function ColoredField(props) {
+  const readOnly = "editable" in props ? false : true;
 
-  getColorClass = e => {
-    if (this.state.value < 0) {
-      return "too-low";
-    }
-    if (this.state.value > 0) {
-      return "too-high";
-    }
-
+  const getColorClass = value => {
+    if (value < 0) return "too-low";
+    if (value > 0) return "too-high";
     return "";
   };
 
-  onChange = e => {
-    // console.log(e);
-    const newValue = e.target.value;
-    if (!isNaN(newValue) || newValue === "-") {
-      this.setState({
-        value: newValue
-      });
-    }
-  };
-
-  render() {
-    return (
-      <li>
-        <span>{this.props.label}</span>
-        <span>
-          <input
-            className={this.getColorClass()}
-            id={this.props.id}
-            type="text"
-            readOnly={this.readOnly}
-            value={this.state.value}
-            onChange={this.onChange}
-          />
-        </span>
-      </li>
-    );
-  }
+  return (
+    <li>
+      <span>{props.label}</span>
+      <span>
+        <input
+          id={props.id}
+          type="text"
+          readOnly={readOnly}
+          value={props.value}
+          onChange={props.onChangeValue}
+          className={getColorClass(props.value)}
+        />
+      </span>
+    </li>
+  );
 }
 
 function Station(props) {
@@ -107,12 +72,7 @@ function Station(props) {
               value={s.value}
               editable
             />
-            <ColorfullField
-              id="input-expected"
-              label="Różnica"
-              value={s.value - s.expected}
-            />
-            <Field
+            <ColoredField
               id="input-expected"
               label="Różnica"
               value={s.value - s.expected}
@@ -148,32 +108,12 @@ class Form extends React.Component {
   onChangeValue = (station, e) => {
     console.log(station);
     let v = e.target.value;
+    if (isNaN(v)) return;
+
     station.value = v;
-    console.log("Akuku: ", v);
+    // console.log("Akuku: ", v);
     this.setState({ data: this.state.data });
   };
-
-  // updateColor = () => {
-  //   var e = document.getElementById("input-expected");
-  //   if (e) {
-  //     //var v = parseInt(e.value);
-  //     e.style.color = this.getColorForVariance();
-  //   }
-  // };
-
-  // getColorForVariance = () => {
-  //   var v = this.state.selected.value - this.state.selected.expected;
-  //   console.log(v);
-  //   return v >= 0 ? "green" : "red";
-  // };
-
-  componentDidMount() {
-    //this.updateColor();
-  }
-
-  componentDidUpdate() {
-    //this.updateColor();
-  }
 
   render() {
     return (
@@ -195,7 +135,7 @@ class Form extends React.Component {
               <Station
                 onChangeValue={this.onChangeValue}
                 station={this.state.selected}
-                // colorForVariance={this.getColorForVariance}
+                colorForVariance={this.getColorForVariance}
               />
             </div>
           </div>
@@ -211,7 +151,6 @@ function App() {
       <h1>Mapa stacji bazowych</h1>
 
       <Form />
-      <ColorfullField editable />
     </div>
   );
 }
